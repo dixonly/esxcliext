@@ -10,4 +10,7 @@ The new sub-commands added are:
  - netstats - Same as running net-stats
  - vsip - same as running vsipioctl
 
+Not all the options of nsxcli and nsxdpcli are exposed.  If you need other commands or sub-commmands implemented, let me know.  I will avoid adding non-read-only support; for vsipioctl, I do allow for the command options that reset stats or counters to 0.
+
+In order for vsipioctl to be useful, the output of summarize-dvfilter is already required.  I've added that as a sub-command under vsip.
 
