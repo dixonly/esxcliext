@@ -163,7 +163,7 @@ I've found that the VIB that's created by vibcreate.py does not always install s
 
 ```
 
-I have yet been able to explain why this is happening.  However, any VIBs that I manually create can be installed successfully.  If the vib created by vibcreate.py is not working for you, try the following procedure:
+I have yet been able to explain why this is happening; the most likely suspect is the usage of the gzip library in Python.  Regardless, any VIBs that I manually create can be installed successfully.  If the vib created by vibcreate.py is not working for you, try the following procedure:
 
 1. run vibcreate.py to generate the contents of the "usr" and "opt" directories
 2. Create the tar bundle: tar cvf esxcli-nsx-ext opt usr
