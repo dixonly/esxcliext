@@ -1,4 +1,3 @@
-#env python3
 #!/usr/bin/env python3
 from xml.etree import ElementTree as ET
 import datetime
@@ -35,6 +34,7 @@ def main():
     files["dvfilters"] = {"script": "esxcli-summarize-dvfilters.sh", "ext":""}
     files["vsipioctl"] = {"script": "esxcli-vsipioctl.sh", "ext": "nsx-vsipioctl.xml"}
 
+    print("Removing existing output files and directories...")
     if os.path.exists(vib_bin_dir):
         shutil.rmtree(vib_bin_dir)
     if os.path.exists(vib_ext_dir):
@@ -45,9 +45,12 @@ def main():
         os.remove(sigfile)
     if os.path.exists(vibfile):
         os.remove(vibfile)
-                                
+
+    print("Creating output directories: %s, %s" %(vib_bin_dir, vib_ext_dir))
     os.makedirs(vib_bin_dir)
     os.makedirs(vib_ext_dir)
+
+    print("Generating esxcli extensions")
     for f in files.keys():
         if f == "netstats":
             netstats.createNetstatsExt(vib_ext_dir + "/" + files[f]["ext"])
@@ -72,8 +75,9 @@ def main():
     tar.add(vib_bin_dir)
     tar.add(vib_ext_dir)
     '''
-    r = subprocess.run(["tar", "cvf", vibname+".tar", vib_bin_dir, vib_ext_dir])
-    print(r.stdout)
+    print("Creating tar bundle for VIB payload")
+    r = subprocess.run(["tar", "cf", vibname+".tar", vib_bin_dir, vib_ext_dir])
+    #print(r.stdout)
 
 
     tar = tarfile.open(vibname+".tar", "r:")
@@ -83,7 +87,7 @@ def main():
             vib_payload.append(tf.name)
     tar.close()
 
-    # Get sha256 and sha1 chksums of the tar file
+    # Get sha256 and sha1 chksums of the tar fil
     vibtar = open(vibname + ".tar", "rb")
     data = vibtar.read()
     h256 = hashlib.sha256(data).hexdigest()
@@ -91,6 +95,7 @@ def main():
     #print("sha256- "+ h256)
     #print("sha1- " + h1)
     vibtar.seek(0)
+    print("Creating gzip file of tar bundle for VIB payload")
 
     # gz compress the tar file
     vibgz = gzip.open(vibname, "wb")
@@ -106,6 +111,7 @@ def main():
     gzhash = hashlib.sha256(vibdata).hexdigest()
     #print("gz sha256 - " + gzhash)
 
+    print("Creating descriptor.xml for VIB")
     #create the vib descriptor file
     vibdesc = ET.Element("vib", attrib={"version": "5.0"})
     SubElement(vibdesc, tag="type", text="bootbank")
@@ -155,6 +161,7 @@ def main():
 
     open(sigfile, "a").close()
 
+    print("Creating the vib: %s" % vibname + ".vib")
     r = subprocess.run(["ar","r", vibname + ".vib", descriptor, sigfile, vibname],
                        capture_output=True, text=True)
     print(r.stdout)
