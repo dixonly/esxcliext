@@ -15,7 +15,7 @@ Not all the options of nsxcli and nsxdpcli are exposed.  If you need other comma
 In order for vsipioctl to be useful, the output of summarize-dvfilter is already required.  I've added that as a sub-command under vsip.
 
 ## Build
-A pre-build copy of th esxcli-nsx-ext.vib is already included in the repository - I have only tested this VIB on ESXi8.  If you want to recreate it, run the python script vibcreate.py to generate the extensions and create the esxcli-nsx-ext.vib.  
+A pre-build copy of th esxcli-nsx-ext.vib is already included in the repository - I have only tested this VIB on ESXi8.  If you want to recreate it, run the python script vibcreate.py to generate the extensions and create the esxcli-nsx-ext.vib.  The host running vibcreate.py must have the python extensions specified in the python import list, tar, gzip, and ar. 
 
 ```text
 $ ./vibcreate.py
@@ -30,7 +30,7 @@ Creating the vib: esxcli-nsx-ext.vib
 ```
 
 ## Install
-The VIB must be install onto the ESXi host.  Copy the esxcli-nsx-ext.vib to a an accessible filesystem on the host or a URL that's reachable from the host.  Use ESXCLI to install the vib.  For example, to install the VIB at the ESXi root shell from a local file system:
+The VIB must be installed onto the ESXi host.  Copy the esxcli-nsx-ext.vib to a an accessible filesystem on the host or a URL that's reachable from the host.  Use ESXCLI to install the vib.  For example, to install the VIB at the ESXi root shell from a local file system:
 
 ```text
 [root@vesxi-001:~] esxcli software vib install -v file:/tmp/esxcli-nsx-ext.vib
@@ -44,7 +44,7 @@ Installation Result
 
 ```
 
-After installation, you must restart hostd on the ESXi host for the new extensions to become available.
+The installation of the vib can be done without entering host maintenance mode or reboot.  However, after installation, you must restart hostd on the ESXi host for the new extensions to become available.
 
 ```text
 
@@ -123,5 +123,5 @@ PortNum          Type SubType SwitchName       MACAddress         ClientName
 
 ```
 
-There should be plenty of documents and how-tos on how to execute esxcli remotely or via PowerCLI.
+There should be plenty of documents and how-tos on executng esxcli remotely or via PowerCLI.
 
