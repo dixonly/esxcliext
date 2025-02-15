@@ -27,7 +27,7 @@ Creating gzip file of tar bundle for VIB payload
 Creating descriptor.xml for VIB
 Creating the vib: esxcli-nsx-ext.vib
 
-```text
+```
 
 ## Install
 The VIB must be install onto the ESXi host.  Copy the esxcli-nsx-ext.vib to a an accessible filesystem on the host or a URL that's reachable from the host.  Use ESXCLI to install the vib.  For example, to install the VIB at the ESXi root shell from a local file system:
@@ -42,7 +42,7 @@ Installation Result
    Reboot Required: false
    DPU Results:
 
-```text
+```
 
 After installation, you must restart hostd on the ESXi host for the new extensions to become available.
 
@@ -53,7 +53,7 @@ hostd stopped.
 hostd started.
 [root@vesxi-001:~]
 
-```text
+```
 
 After restart hostd, the nestats, nsxcli, nsxdpcli and vsip namespace commands will be available:
 
@@ -121,7 +121,7 @@ PortNum          Type SubType SwitchName       MACAddress         ClientName
 67108885            5       9 DvsPortset-0     00:50:56:a2:f9:3d  vedge3.eth0
 
 
-```text
+```
 
 There should be plenty of documents and how-tos on how to execute esxcli remotely or via PowerCLI.
 
