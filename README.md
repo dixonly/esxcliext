@@ -137,3 +137,57 @@ PortNum          Type SubType SwitchName       MACAddress         ClientName
 
 There should be plenty of documents and how-tos on executng esxcli remotely or via PowerCLI.
 
+
+## TO be resolved
+I've found that the VIB that's created by vibcreate.py does not always install successfully.  For example, you could run into this error during VIB install:
+
+```text
+
+ Output: The old parameter format is deprecated, please switch to the new format. See secureMount.py -h for more details.
+ ERROR:root:Failed to mount: [Errno 1] Operation not permitted: '/tardisks/esxcli_n.t00'
+ Traceback (most recent call last):
+   File "/lib64/python3.11/shutil.py", line 856, in move
+ OSError: [Errno 22] Invalid argument: '/usr/lib/vmware/lifecycle/stageliveimage/data/esxcli_n.t00' -> '/tardisks/esxcli_n.t00'
+
+ During handling of the above exception, another exception occurred:
+
+ Traceback (most recent call last):
+   File "/usr/lib/vmware/secureboot/bin/secureMount.py", line 372, in legacyParsing
+     MountTardisk(True, FindVibInDB(sys.argv[1]), sys.argv[2], sys.argv[3])
+   File "/usr/lib/vmware/secureboot/bin/secureMount.py", line 157, in MountTardisk
+     shutil.move(tardiskPath, dest)
+   File "/lib64/python3.11/shutil.py", line 876, in move
+   File "/lib64/python3.11/shutil.py", line 448, in copy2
+   File "/lib64/python3.11/shutil.py", line 258, in copyfile
+ PermissionError: [Errno 1] Operation not permitted: '/tardisks/esxcli_n.t00'
+
+```
+
+I have yet been able to explain why this is happening.  However, any VIBs that I manually create can be installed successfully.  If the vib created by vibcreate.py is not working for you, try the following procedure:
+
+1. run vibcreate.py to generate the contents of the "usr" and "opt" directories
+2. Create the tar bundle: tar cvf esxcli-nsx-ext opt usr
+3. Take the sha-256 and sha-1 checksums of the tar bundle
+   - sha256sum esxcli-nsx-ext.tar
+   - sha1sum esxcli-nsx-ext.tar
+4. Compress the tar file with gzip: gzip esxcli-nsx-ext.tar
+   This should create esxcli-nsx-ext.tar.gz
+5. Rename esxcli-nsx-ext.tar.gz to esxcli-nsx-ext
+6. Update descriptor.xml to reflect the size of your esxcli-nsx-ext file, and update the checksums in the file:
+
+relevant section:
+   -change the size
+   -update the first sha-256 checksum to contain the checksum of your esxcli-nsx-ext.tar.gz
+   -update the second sha-256 checksum to contain the checksum of your esxcli-nsx-ext.tar
+   -update the sha-1 checksum to contain the sha1 checksum of your esxcli-nsx-ext.tar
+```text
+        <payload name="esxcli-nsx-ext" type="tgz" size="5454">
+            <checksum checksum-type="sha-256">b6dc176972ae5e5d5e6a62a7d402a1d1d1da2c122a7b37bad7f788f6c133f890</checksum>
+            <checksum checksum-type="sha-256" verify-process="gunzip">e49b46bcf9a22f674354be7cd55a3868d85108e6ea36cab15c2833d44a9683aa</checksum>
+            <checksum checksum-type="sha-1" verify-process="gunzip">efff74fce3dc9f02103291ceb7928dca5fa4a810</checksum>
+        </payload>
+```
+7. Create the vib: ar r esxcli-nsx-ext.vib descriptor.xml sig.pkcs7 esxcli-nsx-ext
+
+
+   
