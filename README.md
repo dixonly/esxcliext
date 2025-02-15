@@ -176,10 +176,10 @@ I have yet been able to explain why this is happening.  However, any VIBs that I
 6. Update descriptor.xml to reflect the size of your esxcli-nsx-ext file, and update the checksums in the file:
 
 relevant section:
-   -change the size
-   -update the first sha-256 checksum to contain the checksum of your esxcli-nsx-ext.tar.gz
-   -update the second sha-256 checksum to contain the checksum of your esxcli-nsx-ext.tar
-   -update the sha-1 checksum to contain the sha1 checksum of your esxcli-nsx-ext.tar
+   - change the size
+   - update the first sha-256 checksum to contain the checksum of your esxcli-nsx-ext.tar.gz
+   - update the second sha-256 checksum to contain the checksum of your esxcli-nsx-ext.tar
+   - update the sha-1 checksum to contain the sha1 checksum of your esxcli-nsx-ext.tar
 ```text
         <payload name="esxcli-nsx-ext" type="tgz" size="5454">
             <checksum checksum-type="sha-256">b6dc176972ae5e5d5e6a62a7d402a1d1d1da2c122a7b37bad7f788f6c133f890</checksum>
