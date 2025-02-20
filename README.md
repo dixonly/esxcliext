@@ -1,8 +1,8 @@
 ## Extensions for esxcli for NSX networking and security
 
-NSX operations and troubleshooting sometimes require root shell access to execute CLIs.  This is not always convenient as we recommend that SSH to the ESXi be disabled by default; and even when enabled, the root password should only be accessible through a secure vault.  ESXi does provide the "esxcli" command its family of sub-commands that can executed remotely; and the sessions can be authenticated through vCenter PSC credentials. 
+NSX operations and troubleshooting sometimes require root shell access to execute CLIs.  This is not always convenient as we recommend that SSH to the ESXi be disabled by default; and even when enabled, the root password should only be accessible through a secure vault.  ESXi provides the "esxcli" command and its family of sub-commands that can executed remotely; and the sessions can be authenticated through vCenter PSC credentials. 
 
-However, not all the "useful" CLIs for NSX network and security operations are available through esxcli.  This project extends esxcli to support some of the more command CLIs.
+However, not all the "useful" CLIs for NSX network and security operations are available through esxcli.  This project extends esxcli to support some of the more common CLIs.
 
 The new sub-commands added are:
  - nsxcli - Same as running "nsxcli -c <command>"
@@ -10,12 +10,12 @@ The new sub-commands added are:
  - netstats - Same as running net-stats
  - vsip - same as running vsipioctl
 
-Not all the options of nsxcli and nsxdpcli are exposed.  If you need other commands or sub-commmands implemented, let me know.  I will avoid adding non-read-only support; for vsipioctl, I do allow for the command options that reset stats or counters to 0.
+Not all the options of nsxcli and nsxdp-cli are exposed.  If you need other commands or sub-commmands implemented, let me know.  I will avoid adding non-read-only support; for vsipioctl, I do allow for the command options that reset stats or counters to 0.
 
 In order for vsipioctl to be useful, the output of summarize-dvfilter is already required.  I've added that as a sub-command under vsip.  
 
 ## Build
-A pre-build copy of th esxcli-nsx-ext.vib is already included in the repository - I have only tested this VIB on ESXi8.  If you want to recreate it, run the python script vibcreate.py to generate the extensions and create the esxcli-nsx-ext.vib.  The host running vibcreate.py must have the python extensions specified in the python import list, tar, gzip, and ar. 
+A pre-built copy of the esxcli-nsx-ext.vib is already included in the repository - I have only tested this VIB on ESXi8.  If you want to recreate it, run the python script vibcreate.py to generate the extensions and create the esxcli-nsx-ext.vib.  The host running vibcreate.py must have the python extensions specified in the python import list, tar, gzip, and ar. 
 
 ```text
 $ ./vibcreate.py
@@ -30,7 +30,7 @@ Creating the vib: esxcli-nsx-ext.vib
 ```
 
 ## Install
-The VIB must be installed onto the ESXi host.  Copy the esxcli-nsx-ext.vib to a an accessible filesystem on the host or a URL that's reachable from the host.  Use ESXCLI to install the vib.  For example, to install the VIB at the ESXi root shell from a local file system:
+The VIB must be installed onto the ESXi host.  Copy the esxcli-nsx-ext.vib to a an accessible filesystem on the host or a URL that's reachable from the host.  Use ESXCLI to install the vib.  For example, use the following procedure to install the VIB at the ESXi root shell from a local file system.
 
 This VIB is community supported; as such, your ESXi host's software acceptance level must be set to CommunitySupported.  If it's not set, then you'll ge this error during install:
 
@@ -42,7 +42,8 @@ This VIB is community supported; as such, your ESXi host's software acceptance l
  Please refer to the log file for more details.
 ```
 
-Use the CLI 'esxcli software acceptance get' to find the current acceptance level.  Use 'esxcli software acceptance set --level=CommunitySupported' to change the acceptance level.
+Use the CLI 'esxcli software acceptance get' to find the current acceptance level.  Use 'esxcli software acceptance set --level=CommunitySupported' to change the acceptance level. Then use esxcli to install the vib.
+
 
 ```text
 [root@vesxi-001:~] esxcli software vib install -v file:/tmp/esxcli-nsx-ext.vib
